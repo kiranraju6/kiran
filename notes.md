@@ -1,0 +1,9 @@
+# docker run -d \
+  -p 8080:8080 -p 50000:50000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v jenkins_home:/var/jenkins_home \
+  --name jenkins \
+  jenkins/jenkins:lts
+
+### localhost: 5000 : flask
+#### localhost: 8080 : jenkins ui
