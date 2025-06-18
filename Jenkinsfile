@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t ${hello-world}:${latest} .'
+                sh 'docker build -t ${jenkins}:${lts} .'
             }
         }
 
