@@ -18,9 +18,6 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh '''
-                apt-get update
-                apt-get install -y sudo
-                docker --help
                 docker build -t ${IMAGE_NAME}:${VERSION} .
                 '''
             }
