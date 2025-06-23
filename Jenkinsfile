@@ -17,7 +17,10 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:${VERSION} .'
+                sh '''
+                docker --help
+                docker build -t ${IMAGE_NAME}:${VERSION} .
+                '''
             }
         }
 
