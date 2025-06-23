@@ -36,7 +36,7 @@ pipeline {
             steps {
                 echo 'Waiting for green environment to boot...'
                 sh 'sleep 5' // simple wait; you could use curl health check here
-                sh 'curl -f http://liatrio/jenkins-alpine:${GREEN_PORT}/ || (echo "Health check failed!" && exit 1)'
+                sh 'curl -f http://host.docker.internal:${GREEN_PORT}/ || (echo "Health check failed!" && exit 1)'
             }
         }
 
