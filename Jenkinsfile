@@ -4,8 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = 'flask-app'
         VERSION = "v1.${BUILD_NUMBER}"
-        BLUE_PORT = '5001'
-        GREEN_PORT = '5002'
+        BLUE_PORT = '5006'
+        GREEN_PORT = '5007'
     }
 
     stages {
