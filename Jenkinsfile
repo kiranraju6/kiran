@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         IMAGE_NAME = 'flask-app'
         VERSION = "v1.${BUILD_NUMBER}"
