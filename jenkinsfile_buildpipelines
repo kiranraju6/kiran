@@ -1,0 +1,87 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "myflaskapp"
+        VERSION = "v1.${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url :"http:github.com/repo.git",branch:"dev"
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Building Docker image: ${IMAGE_NAME}:${VERSION}"
+                sh "docker build -t ${IMAGE_NAME}:${VERSION} ."
+            }
+        }
+
+        stage('Test (unit)') {
+            steps {
+                echo "Running tests (dummy)"
+                // Add real tests if needed
+                sh "python -m unittest test_app.py'"
+            }
+        }
+
+        stage('Push Image (optional)') {
+            when {
+                expression { return false } // set to true if pushing to a registry
+            }
+            steps {
+                echo "Pushing image to registry"
+                sh "docker tag ${IMAGE_NAME}:${VERSION} myregistry/${IMAGE_NAME}:${VERSION}"
+                sh "docker push myregistry/${IMAGE_NAME}:${VERSION}"
+            }
+        }
+
+        stage('Deploy to Dev') {
+            steps {
+                echo "Deploying to DEV..."
+                sh '''
+                docker rm -f flask-dev || true
+                docker run -d --name flask-dev -p 5001:5000 ${IMAGE_NAME}:${VERSION}
+                '''
+            }
+        }
+
+        stage('Deploy to QA') {
+            input {
+                message "Deploy to QA?"
+                ok "Yes"
+            }
+            steps {
+                echo "Deploying to QA..."
+                sh '''
+                docker rm -f flask-qa || true
+                docker run -d --name flask-qa -p 5002:5000 ${IMAGE_NAME}:${VERSION}
+                '''
+            }
+        }
+
+        stage('Deploy to Prod') {
+            input {
+                message "Deploy to Production?"
+                ok "Deploy"
+            }
+            steps {
+                echo "Deploying to PROD..."
+                sh '''
+                docker rm -f flask-prod || true
+                docker run -d --name flask-prod -p 5003:5000 ${IMAGE_NAME}:${VERSION}
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+    }
+}

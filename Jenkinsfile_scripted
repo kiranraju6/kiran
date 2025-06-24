@@ -1,0 +1,19 @@
+node 
+{
+
+    stage ("clone")
+    {
+        echo "cloning repo"
+    }
+    stage ("build docker image")
+    {
+        sh 'docker build -t jenkins build'
+    }
+    stage ("run container")
+    {
+           sh '''
+                docker rm -f flask-container || true
+                docker run -d -p 5000:5000 --name flask-container flask-jenkins-app
+                '''
+    }
+}
